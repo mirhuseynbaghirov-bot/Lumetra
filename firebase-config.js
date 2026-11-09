@@ -18,6 +18,6 @@ export const UPLOAD_PRESET = "loeyrbhx";
 export const INSTAGRAM = "1lumetra";
 
 // 5) İstəyə bağlı məhsul sayı limiti. 0 = limit yoxdur
-export const MAX_PRODUCTS = 0;
+export const MAX_PRODUCTS = 50;
 
 export const CURRENCY = "₼";
