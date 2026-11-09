@@ -105,6 +105,7 @@ async function mutate(fn){
     const s = await tx.get(ref);
     const next = fn(s.exists() ? (s.data().items || []) : []);
     tx.set(ref, { items: next, updatedAt: Date.now() });
+    try { localStorage.removeItem("lumetra_catalog_v1"); } catch {}   // bu brauzerdə sayt dərhal yenilənsin
     return next;
   });
 }
