@@ -47,8 +47,8 @@ document.getElementById("yr").textContent = new Date().getFullYear();
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const thumb = (u, w) => u.replace("/upload/", `/upload/f_auto,q_auto,w_${w}/`);
 
-// Brauzer yaddaşı: təkrar girənlər üçün Firebase-ə sorğu getmir (10 dəq)
-const KEY = "lumetra_catalog_v1", TTL = 10 * 60 * 1000;
+// Brauzer yaddaşı: təkrar girənlər üçün Firebase-ə sorğu getmir (3 dəq)
+const KEY = "lumetra_catalog_v1", TTL = 3 * 60 * 1000;
 const readCache = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
 
 let products = [];
@@ -76,12 +76,12 @@ function render(list){
 }
 
 const cache = readCache();
-if (cache && Date.now() - cache.t < TTL) products = cache.items;
+if (cache && cache.items?.length && Date.now() - cache.t < TTL) products = cache.items;
 else {
   try {
     const s = await getDoc(doc(db, "shop", "catalog"));
     products = s.exists() ? (s.data().items || []) : [];
-    try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), items: products })); } catch {}
+    if (products.length) { try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), items: products })); } catch {} }
   } catch (e) {
     console.error(e);
     if (cache) products = cache.items;            // Firebase cavab verməsə köhnə siyahı göstərilir
