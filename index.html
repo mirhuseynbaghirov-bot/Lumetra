@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lumetra — Aksesuarlar</title>
+<meta name="description" content="Lumetra: gündəlik üslubunuzu tamamlayan aksesuarlar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#">Lumetra<i></i></a>
+    <a class="btn ghost sm" id="igTop" target="_blank" rel="noopener">Instagram</a>
+  </header>
+
+  <section class="hero">
+    <h1>Lumetra</h1>
+    <p>Hər gün taxdığınız kiçik detallar. Əl ilə seçilmiş aksesuarlar, Bakı daxili çatdırılma.</p>
+    <a class="btn" href="#shop">Məhsullara bax</a>
+  </section>
+
+  <section id="shop">
+    <div class="bar">
+      <h2>Məhsullar</h2>
+      <input class="search" id="q" type="search" placeholder="Məhsul axtar" aria-label="Məhsul axtar">
+    </div>
+    <div class="grid" id="grid"><div class="empty">Yüklənir…</div></div>
+  </section>
+</div>
+<footer><div class="wrap">© <span id="yr"></span> Lumetra. Sifariş üçün Instagram DM.</div></footer>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { firebaseConfig, INSTAGRAM, CURRENCY } from "./firebase-config.js";
+
+const db = getFirestore(initializeApp(firebaseConfig));
+const grid = document.getElementById("grid");
+const dm = `https://ig.me/m/${INSTAGRAM}`;
+document.getElementById("igTop").href = `https://instagram.com/${INSTAGRAM}`;
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let products = [];
+
+function stockTag(n){
+  if (n <= 0) return '<span class="tag out">Bitib</span>';
+  if (n <= 3) return `<span class="tag low">Son ${n} ədəd</span>`;
+  return '<span class="tag ok">Stokda</span>';
+}
+
+function render(list){
+  if (!list.length){ grid.innerHTML = '<div class="empty">Hələlik məhsul yoxdur.</div>'; return; }
+  grid.innerHTML = list.map(p => `
+    <article class="card">
+      <div class="ph"><img src="${p.image}" alt="${esc(p.name)}" loading="lazy">${stockTag(p.stock)}</div>
+      <div class="info">
+        <h3>${esc(p.name)}</h3>
+        ${p.desc ? `<p class="desc">${esc(p.desc)}</p>` : ""}
+        <div class="row">
+          <span class="price">${Number(p.price).toFixed(2)} ${CURRENCY}</span>
+          ${p.stock > 0
+            ? `<a class="btn sm" href="${dm}" target="_blank" rel="noopener">Sifariş et</a>`
+            : `<span class="btn sm ghost" aria-disabled="true">Bitib</span>`}
+        </div>
+      </div>
+    </article>`).join("");
+}
+
+try {
+  const snap = await getDocs(query(collection(db, "products"), orderBy("createdAt", "desc")));
+  products = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  render(products);
+} catch (e) {
+  console.error(e);
+  grid.innerHTML = '<div class="empty">Məhsullar yüklənmədi. Bir az sonra yenidən yoxlayın.</div>';
+}
+
+document.getElementById("q").addEventListener("input", e => {
+  const t = e.target.value.trim().toLowerCase();
+  render(products.filter(p => p.name.toLowerCase().includes(t)));
+});
+</script>
+</body>
+</html>
