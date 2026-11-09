@@ -3,35 +3,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f3d2c">
 <title>Lumetra — Aksesuarlar</title>
-<meta name="description" content="Lumetra: gündəlik üslubunuzu tamamlayan aksesuarlar.">
+<meta name="description" content="Lumetra: gündəlik üslubunuzu tamamlayan aksesuarlar. Sifariş Instagram DM-də.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="store.css">
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <a class="brand" href="#">Lumetra<i></i></a>
-    <a class="btn ghost sm" id="igTop" target="_blank" rel="noopener">Instagram</a>
-  </header>
+<div class="announce">Sifariş Instagram DM-də qəbul olunur</div>
 
-  <section class="hero">
-    <h1>Lumetra</h1>
-    <p>Hər gün taxdığınız kiçik detallar. Əl ilə seçilmiş aksesuarlar, Bakı daxili çatdırılma.</p>
-    <a class="btn" href="#shop">Məhsullara bax</a>
-  </section>
-
-  <section id="shop">
-    <div class="bar">
-      <h2>Məhsullar</h2>
-      <input class="search" id="q" type="search" placeholder="Məhsul axtar" aria-label="Məhsul axtar">
-    </div>
-    <div class="grid" id="grid"><div class="empty">Yüklənir…</div></div>
-  </section>
+<div class="hero-zone">
+  <div class="wrap">
+    <header class="nav">
+      <a class="logo" href="#">Lumetra</a>
+      <nav>
+        <a href="#shop">Məhsullar</a>
+        <a href="#how">Necə sifariş edim?</a>
+        <a class="btn light sm" id="igTop" target="_blank" rel="noopener">Instagram</a>
+      </nav>
+    </header>
+    <section class="hero">
+      <div>
+        <h1>Üslubunuzu tamamlayan kiçik detallar</h1>
+        <p>Əl ilə seçilmiş aksesuarlar. Bəyəndiyinizi tapın, Instagram DM-də sifariş edin.</p>
+        <div class="cta">
+          <a class="btn light" href="#shop">Məhsullara bax</a>
+          <a class="btn line" id="igHero" target="_blank" rel="noopener">Instagramda yaz</a>
+        </div>
+      </div>
+      <div class="arches" id="arches" aria-hidden="true">
+        <div class="arch ph"></div><div class="arch ph"></div><div class="arch ph"></div>
+      </div>
+    </section>
+  </div>
 </div>
-<footer><div class="wrap">© <span id="yr"></span> Lumetra. Sifariş üçün Instagram DM.</div></footer>
+
+<main>
+  <section class="shop" id="shop">
+    <div class="wrap">
+      <div class="shop-head">
+        <h2>Məhsullar</h2>
+        <input class="search" id="q" type="search" placeholder="Məhsul axtar" aria-label="Məhsul axtar">
+      </div>
+      <div class="chips" id="chips" hidden></div>
+      <div class="grid" id="grid">
+        <div class="sk"><div class="img"></div><div class="l"></div></div>
+        <div class="sk"><div class="img"></div><div class="l"></div></div>
+        <div class="sk"><div class="img"></div><div class="l"></div></div>
+        <div class="sk"><div class="img"></div><div class="l"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="wrap">
+      <h2>Necə sifariş edim?</h2>
+      <div class="steps">
+        <div class="step"><b>1</b><h3>Məhsulu seçin</h3><p>Bəyəndiyiniz aksesuarı tapın və stokda olduğunu yoxlayın.</p></div>
+        <div class="step"><b>2</b><h3>Sifariş et düyməsinə basın</h3><p>Instagram-da mesaj pəncərəsi açılır, məhsulun adını yazın.</p></div>
+        <div class="step"><b>3</b><h3>Detalları razılaşdırın</h3><p>Ünvanı və ödəniş qaydasını mesajda bizimlə razılaşdırın.</p></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <span class="logo">Lumetra</span>
+      <a id="igFoot" target="_blank" rel="noopener"></a>
+    </div>
+    <p class="copy">© <span id="yr"></span> Lumetra</p>
+  </div>
+</footer>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -39,10 +85,10 @@ import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10
 import { firebaseConfig, INSTAGRAM, CURRENCY } from "./firebase-config.js";
 
 const db = getFirestore(initializeApp(firebaseConfig));
-const grid = document.getElementById("grid");
-const dm = `https://ig.me/m/${INSTAGRAM}`;
-document.getElementById("igTop").href = `https://instagram.com/${INSTAGRAM}`;
-document.getElementById("yr").textContent = new Date().getFullYear();
+const $ = id => document.getElementById(id);
+const dm = `https://ig.me/m/${INSTAGRAM}`, profile = `https://instagram.com/${INSTAGRAM}`;
+$("igTop").href = profile; $("igHero").href = dm; $("igFoot").href = profile;
+$("igFoot").textContent = "@" + INSTAGRAM; $("yr").textContent = new Date().getFullYear();
 
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const thumb = (u, w) => u.replace("/upload/", `/upload/f_auto,q_auto,w_${w}/`);
@@ -51,48 +97,70 @@ const thumb = (u, w) => u.replace("/upload/", `/upload/f_auto,q_auto,w_${w}/`);
 const KEY = "lumetra_catalog_v1", TTL = 3 * 60 * 1000;
 const readCache = () => { try { return JSON.parse(localStorage.getItem(KEY)); } catch { return null; } };
 
-let products = [];
+let products = [], active = "Hamısı", term = "";
 
 function stockTag(n){
   if (n <= 0) return '<span class="tag out">Bitib</span>';
   if (n <= 3) return `<span class="tag low">Son ${n} ədəd</span>`;
-  return '<span class="tag ok">Stokda</span>';
+  return "";
 }
 function render(list){
-  if (!list.length){ grid.innerHTML = '<div class="empty">Hələlik məhsul yoxdur.</div>'; return; }
-  grid.innerHTML = list.map(p => `
-    <article class="card">
-      <div class="ph"><img src="${thumb(p.image, 500)}" width="500" height="500" alt="${esc(p.name)}" loading="lazy" decoding="async">${stockTag(p.stock)}</div>
+  if (!list.length){ $("grid").innerHTML = '<div class="empty">Bu axtarışa uyğun məhsul tapılmadı.</div>'; return; }
+  $("grid").innerHTML = list.map(p => `
+    <article class="card${p.stock <= 0 ? " sold" : ""}">
+      <div class="ph"><img src="${thumb(p.image, 520)}" width="520" height="650" alt="${esc(p.name)}" loading="lazy" decoding="async">${stockTag(p.stock)}</div>
       <div class="info">
+        ${p.category ? `<div class="cat">${esc(p.category)}</div>` : ""}
         <h3>${esc(p.name)}</h3>
         ${p.desc ? `<p class="desc">${esc(p.desc)}</p>` : ""}
         <div class="row">
           <span class="price">${Number(p.price).toFixed(2)} ${CURRENCY}</span>
-          ${p.stock > 0 ? `<a class="btn sm" href="${dm}" target="_blank" rel="noopener">Sifariş et</a>`
-                        : `<span class="btn sm ghost" aria-disabled="true">Bitib</span>`}
+          ${p.stock > 0 ? `<a class="btn dark sm" href="${dm}" target="_blank" rel="noopener">Sifariş et</a>`
+                        : `<span class="btn off sm">Bitib</span>`}
         </div>
       </div>
     </article>`).join("");
 }
+function chips(){
+  const cats = [...new Set(products.map(p => p.category).filter(Boolean))];
+  $("chips").hidden = !cats.length;
+  $("chips").innerHTML = ["Hamısı", ...cats].map(c => `<button class="chip${c === active ? " on" : ""}" data-c="${esc(c)}">${esc(c)}</button>`).join("");
+}
+function apply(){
+  const t = term.toLowerCase();
+  render(products.filter(p => (active === "Hamısı" || p.category === active) && p.name.toLowerCase().includes(t)));
+}
+function hero(){
+  const pics = products.slice(0, 3);
+  if (!pics.length) return;
+  $("arches").innerHTML = [0, 1, 2].map(i => pics[i]
+    ? `<div class="arch"><img src="${thumb(pics[i].image, 600)}" alt=""></div>` : '<div class="arch ph"></div>').join("");
+}
 
 const cache = readCache();
-if (cache && cache.items?.length && Date.now() - cache.t < TTL) products = cache.items;
+let products0 = null;
+if (cache && cache.items?.length && Date.now() - cache.t < TTL) products0 = cache.items;
 else {
   try {
     const s = await getDoc(doc(db, "shop", "catalog"));
-    products = s.exists() ? (s.data().items || []) : [];
-    if (products.length) { try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), items: products })); } catch {} }
+    products0 = s.exists() ? (s.data().items || []) : [];
+    if (products0.length) { try { localStorage.setItem(KEY, JSON.stringify({ t: Date.now(), items: products0 })); } catch {} }
   } catch (e) {
     console.error(e);
-    if (cache) products = cache.items;            // Firebase cavab verməsə köhnə siyahı göstərilir
-    else { grid.innerHTML = '<div class="empty">Məhsullar yüklənmədi. Bir az sonra yenidən yoxlayın.</div>'; products = null; }
+    if (cache) products0 = cache.items;           // Firebase cavab verməsə köhnə siyahı göstərilir
   }
 }
-if (products){ products.sort((a, b) => b.createdAt - a.createdAt); render(products); }
+if (products0){
+  products = products0.slice().sort((a, b) => b.createdAt - a.createdAt);
+  hero(); chips(); products.length ? apply() : ($("grid").innerHTML = '<div class="empty">Tezliklə yeni məhsullar əlavə olunacaq.</div>');
+} else {
+  $("grid").innerHTML = '<div class="empty">Məhsullar yüklənmədi. Bir az sonra yenidən yoxlayın.</div>';
+}
 
-document.getElementById("q").addEventListener("input", e => {
-  const t = e.target.value.trim().toLowerCase();
-  render((products || []).filter(p => p.name.toLowerCase().includes(t)));
+$("q").addEventListener("input", e => { term = e.target.value.trim(); apply(); });
+$("chips").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  active = b.dataset.c; chips(); apply();
 });
 </script>
 </body>
