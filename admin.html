@@ -41,6 +41,9 @@
       <label class="drop" for="file" id="drop"><span>Şəkil seçmək üçün toxunun</span></label>
       <input id="file" type="file" accept="image/*" hidden>
       <label for="name">Ad</label><input id="name" maxlength="60">
+      <label for="cat">Kateqoriya (istəyə bağlı)</label>
+      <input id="cat" list="cats" maxlength="30" placeholder="məs. Üzük">
+      <datalist id="cats"><option value="Üzük"><option value="Sırğa"><option value="Boyunbağı"><option value="Bilərzik"><option value="Saat"><option value="Çanta"><option value="Eynək"><option value="Telefon qabı"></datalist>
       <div class="two">
         <div><label for="price">Qiymət</label><input id="price" type="number" min="0" step="0.01"></div>
         <div><label for="stock">Stok (ədəd)</label><input id="stock" type="number" min="0" step="1"></div>
@@ -139,7 +142,7 @@ async function loadList(){
   $("list").innerHTML = items.length ? items.map(p => `
     <div class="item" data-id="${p.id}">
       <img src="${thumb(p.image, 150)}" alt="">
-      <div><strong>${esc(p.name)}</strong>
+      <div><strong>${esc(p.name)}</strong>${p.category ? `<div style="color:var(--mute);font-size:.85rem">${esc(p.category)}</div>` : ""}
         <div class="edit">
           <input type="number" min="0" step="0.01" value="${p.price}" data-f="price" aria-label="Qiymət">
           <input type="number" min="0" step="1" value="${p.stock}" data-f="stock" aria-label="Stok">
@@ -174,8 +177,8 @@ $("add").onclick = async () => {
   $("add").disabled = true;
   try {
     const image = await uploadImage(imageBlob);
-    await mutate(a => [...a, { id: crypto.randomUUID(), name, price, stock, desc: $("desc").value.trim(), image, createdAt: Date.now() }]);
-    imageBlob = null; ["name","price","stock","desc","file"].forEach(i => $(i).value = "");
+    await mutate(a => [...a, { id: crypto.randomUUID(), name, category: $("cat").value.trim(), price, stock, desc: $("desc").value.trim(), image, createdAt: Date.now() }]);
+    imageBlob = null; ["name","cat","price","stock","desc","file"].forEach(i => $(i).value = "");
     $("drop").innerHTML = "<span>Şəkil seçmək üçün toxunun</span>";
     toast("Məhsul əlavə olundu"); await loadList();
   } catch (e) {
